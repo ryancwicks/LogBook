@@ -1,0 +1,11 @@
+[package]
+name = "log_book"
+version = "0.1.0"
+authors = ["Ryan Wicks <ryancwicks@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rocket = "0.4.6"
+rocket_contrib = "0.4.6"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
