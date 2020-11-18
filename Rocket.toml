@@ -1,0 +1,2 @@
+[global.databases]
+sql_log = { url = "./log_database.sqlite" }
