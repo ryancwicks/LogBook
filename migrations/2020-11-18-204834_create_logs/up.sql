@@ -1,5 +1,8 @@
 CREATE TABLE logs (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     log_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    body TEXT Not NULL
-)
+    body TEXT NOT NULL
+);
+
+INSERT INTO logs (body) VALUES ("demo log");
+INSERT INTO logs (body) VALUES ("demo log 2");

@@ -1,7 +1,9 @@
 use rocket_contrib::json::Json;
 use serde::{Serialize, Deserialize};
+use std::fmt::Write;
 
-use crate::database::LogDbConn;
+use crate::LogDbConn;
+use crate::db::models::Log;
 
 #[derive(Serialize, Deserialize)]
 pub struct StandardResponse {
@@ -24,11 +26,31 @@ pub fn handle_new_log_item(log_item: Json<LogItem>, conn: LogDbConn) -> Json<Sta
 
     let log_data = log_item.0.log;
 
-
-
-    Json(StandardResponse {
-        success: true,
-        message: "".into(),
-    })
+    if log_data.is_empty() {
+        let message = "Can't insert empty log.";
+        Json(StandardResponse {
+            success: false,
+            message: message.into()
+        })
+    } else if let Err(e) = Log::insert(log_data, &conn) {
+        let mut message: String = "".to_string();
+        match writeln!(message, "DB insertion error: {}", e) {
+            Ok(_) => Json(StandardResponse {
+                    success: false,
+                    message: message
+                    }),
+            Err(_) => Json(StandardResponse {
+                    success: false,
+                    message: "Things have gone very badly wrong.".into()
+                })
+        }
+        
+    } else {
+        Json(StandardResponse {
+            success: true,
+            message: "".into(),
+        })
+    }
 }
+
 

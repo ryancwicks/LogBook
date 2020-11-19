@@ -1,6 +1,6 @@
 table! {
     logs (id) {
-        id -> Integer,
+        id -> Nullable<Integer>,
         log_time -> Timestamp,
         body -> Text,
     }
