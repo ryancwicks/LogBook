@@ -8,10 +8,14 @@ use std::path::Path;
 mod api;
 mod log_book_item;
 mod database;
+mod db;
+
+
 #[cfg(test)] mod tests;
 
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
+#[macro_use] extern crate diesel;
 
 #[get("/")]
 fn index() -> Result<NamedFile, NotFound<String>> {
