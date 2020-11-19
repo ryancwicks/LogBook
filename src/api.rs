@@ -11,8 +11,7 @@ pub struct StandardResponse {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct LogItem {
-    time: u64,
-    description: String,
+    log: String,
 }
 
 #[get("/test")]
@@ -20,12 +19,16 @@ pub fn test_api() -> &'static str {
     "In API."
 }
 
-#[post("/add_item", data = "<log_item>")]
-pub fn handle_new_log_item(log_item: Option<Json<LogItem>>, conn: LogDbConn) -> Json<StandardResponse> {
+#[post("/add_item", format = "json", data = "<log_item>")]
+pub fn handle_new_log_item(log_item: Json<LogItem>, conn: LogDbConn) -> Json<StandardResponse> {
+
+    let log_data = log_item.0.log;
+
+
 
     Json(StandardResponse {
         success: true,
-        message: "Not implemented.".into(),
+        message: "".into(),
     })
 }
 

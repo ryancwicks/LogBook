@@ -6,7 +6,6 @@ use rocket::response::status::{NotFound};
 use std::path::Path;
 
 mod api;
-mod log_book_item;
 mod database;
 mod db;
 
