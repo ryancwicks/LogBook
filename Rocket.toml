@@ -1,2 +1,8 @@
 [global.databases]
-sql_log = { url = "./log_database.sqlite" }
+sql_log = { url = "./log_database.sqlite3" }
+
+[development]
+address = "localhost"
+
+[production]
+address = "0.0.0.0"

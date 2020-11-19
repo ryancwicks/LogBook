@@ -2,18 +2,16 @@
 
 use rocket::response::{NamedFile};
 use rocket::response::status::{NotFound};
-use rocket_contrib::databases::sqlite;
 
 use std::path::Path;
 
 mod api;
 mod log_book_item;
+mod database;
+#[cfg(test)] mod tests;
 
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
-
-#[database("sqlite_logs")]
-struct LogDbConn(diesel::SqliteConnection);
 
 #[get("/")]
 fn index() -> Result<NamedFile, NotFound<String>> {
@@ -27,11 +25,15 @@ fn stylesheet() -> Result<NamedFile, NotFound<String>> {
     NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
 }
 
-fn main() {
-    rocket::ignite().attach (LogDbConn::fairing())
-                    .mount("/", routes![index, stylesheet])
-                    .mount("/api", routes![
-                        api::test_api,
-                        api::handle_new_log_item])
-                    .launch();
+pub fn rocket() -> rocket::Rocket {
+    rocket::ignite().attach (database::LogDbConn::fairing())
+    .mount("/", routes![index, stylesheet])
+    .mount("/api", routes![
+        api::test_api,
+        api::handle_new_log_item])
 }
+fn main() {
+    rocket().launch();
+}
+
+

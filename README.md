@@ -4,7 +4,22 @@ This program is a log book for use through a web broweser. The backend is writte
 
 ## Development Setup
 
-To get the database working, we need to install sqlite. for windows, I had to put the dll from the website on my path. We also need to install the diesel-cli program.
+To get the database working, we need to install sqlite. For windows, this involves building sqlite and nasty path stuff. For linux, I installed libsqlite3-dev (Ubuntu).
+
+Switch project to rust nightly.
+
+```
+rustup override set nightly
+```
+
+Cargo watch is a handy tool to use for this sort of work:
+
+```
+cargo install cargo-watch
+cargo watch -x run
+```
+
+We also need to install the diesel-cli program.
 
 ```
 cargo install diesel_cli --no-default-features --features sqlite
