@@ -5,7 +5,7 @@ use diesel::{self, QueryResult, prelude::*};
 use chrono::NaiveDateTime;
 
 #[table_name = "logs"]
-#[derive(serde::Serialize, Queryable,Insertable,Debug,Clone)]
+#[derive(serde::Serialize,serde::Deserialize,Queryable,Insertable,Debug,Clone)]
 pub struct Log {
     pub id: Option<i32>,
     pub log_time: NaiveDateTime,
@@ -28,7 +28,7 @@ impl Log {
     }
 
     #[cfg(test)]
-    pub fn delete_all(conn: &SqliteConnection) -> usize {
-        diesel::delete(all_logs).execute(conn)?;
+    pub fn delete_all(conn: &SqliteConnection) -> QueryResult<usize> {
+        diesel::delete(all_logs).execute(conn)
     }
 }

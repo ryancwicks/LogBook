@@ -23,8 +23,27 @@ We also need to install the diesel-cli program.
 
 ```
 cargo install diesel_cli --no-default-features --features sqlite
-echo "log_database.sqlite3" > .env
+```
+
+To set up the test database, do the following:
+
+```
+diesel migration run --database-url log_database.sqlite3
+```
+
+To run the tests, set up a test database:
+
+```
+diesel migration run --database-url log_database_test.sqlite3
 ```
 
 From this point, I followed the getting started on the diesel website, substituting sqlite for PostGres.
+
+## Testing
+
+To prevent database problems, run the tests in a single thread. Their are better ways to deal with [this](https://github.com/rust-lang/rust/issues/43155), but this works.
+
+```
+cargo test -- --test-threads=1
+```
 

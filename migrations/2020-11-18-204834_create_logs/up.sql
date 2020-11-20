@@ -4,5 +4,5 @@ CREATE TABLE logs (
     body TEXT NOT NULL
 );
 
-INSERT INTO logs (body) VALUES ("demo log");
-INSERT INTO logs (body) VALUES ("demo log 2");
+/* INSERT INTO logs (body) VALUES ("demo log");
+INSERT INTO logs (body) VALUES ("demo log 2"); */

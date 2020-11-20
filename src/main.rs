@@ -2,6 +2,7 @@
 
 use rocket::response::{NamedFile};
 use rocket::response::status::{NotFound};
+use rocket_contrib::serve::StaticFiles;
 use std::path::Path;
 
 mod api;
@@ -42,19 +43,21 @@ fn index() -> Result<NamedFile, NotFound<String>> {
     NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
 }
 
-#[get("/style.css")]
-fn stylesheet() -> Result<NamedFile, NotFound<String>> {
-    let path = Path::new("static/style.css");
-    NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
-}
+//#[get("/static/<filename>")]
+//fn stylesheet(filename: &RawStr) -> Result<NamedFile, NotFound<String>> {
+//    let full_filename = format!("static/{filename}", filename=filename);
+//    let path = Path::new(&full_filename);
+//    NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
+//}
 
 pub fn rocket() -> rocket::Rocket {
     rocket::ignite().attach (LogDbConn::fairing())
     .attach(rocket::fairing::AdHoc::on_attach("Database Migrations", run_db_migrations))
-    .mount("/", routes![index, stylesheet])
+    .mount("/", routes![index])
+    .mount("/static", StaticFiles::from(concat!(env!("CARGO_MANIFEST_DIR"),"/static")))
     .mount("/api", routes![
-        api::test_api,
-        api::handle_new_log_item])
+        api::handle_new_log_item,
+        api::get_all_records,])
 }
 fn main() {
     rocket().launch();
