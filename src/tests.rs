@@ -13,10 +13,6 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert!(response.body_string() != None);
 
-        response = client.get("/static/style.css").dispatch();
-        assert_eq!(response.status(), Status::Ok);
-        assert!(response.body_string() != None);
-
         response = client.get("/static/favicon.ico").dispatch();
         assert_eq!(response.status(), Status::Ok);
     }

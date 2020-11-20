@@ -1,9 +1,10 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-use rocket::response::{NamedFile};
-use rocket::response::status::{NotFound};
-use rocket_contrib::serve::StaticFiles;
-use std::path::Path;
+use rocket::response::{content, Response}; //{NamedFile};
+use rocket::http::ContentType;
+use std::io::Cursor;
+//use rocket_contrib::serve::StaticFiles;
+//use std::path::Path;
 
 mod api;
 mod db;
@@ -38,10 +39,44 @@ fn run_db_migrations(rocket: rocket::Rocket) -> Result<rocket::Rocket, rocket::R
 }
 
 #[get("/")]
-fn index() -> Result<NamedFile, NotFound<String>> {
-    let path = Path::new("static/index.html");
-    NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
+fn index() -> content::Html<&'static str> {
+    let index_string = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),"/static/index.html"));
+    content::Html(index_string)
 }
+
+#[get("/static/logbook_builder.js")]
+fn log_builder_js() -> content::JavaScript<&'static str> {
+    let js_string = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),"/static/logbook_builder.js"));
+    content::JavaScript(js_string)
+}
+
+#[get("/static/logbook_api.js")]
+fn log_api_js() -> content::JavaScript<&'static str> {
+    let js_string = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),"/static/logbook_api.js"));
+    content::JavaScript(js_string)
+}
+
+#[get("/static/logbook_entry.js")]
+fn log_entry_js() -> content::JavaScript<&'static str> {
+    let js_string = include_str!(concat!(env!("CARGO_MANIFEST_DIR"),"/static/logbook_entry.js"));
+    content::JavaScript(js_string)
+}
+
+#[get("/static/favicon.ico")]
+fn favicon() -> Response<'static> {
+    let favicon_bytes = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"),"/static/favicon.ico"));
+    //content::Content(ContentType::Icon, favicon_string);
+    let mut response = Response::new();
+    response.set_header(ContentType::Icon);
+    response.set_sized_body(Cursor::new(favicon_bytes));
+    response
+}
+
+//#[get("/")]
+//fn index() -> Result<NamedFile, NotFound<String>> {
+//    let path = Path::new("static/index.html");
+//    NamedFile::open(&path).map_err(|e| NotFound(e.to_string()))
+//}
 
 //#[get("/static/<filename>")]
 //fn stylesheet(filename: &RawStr) -> Result<NamedFile, NotFound<String>> {
@@ -53,8 +88,8 @@ fn index() -> Result<NamedFile, NotFound<String>> {
 pub fn rocket() -> rocket::Rocket {
     rocket::ignite().attach (LogDbConn::fairing())
     .attach(rocket::fairing::AdHoc::on_attach("Database Migrations", run_db_migrations))
-    .mount("/", routes![index])
-    .mount("/static", StaticFiles::from(concat!(env!("CARGO_MANIFEST_DIR"),"/static")))
+    .mount("/", routes![index, log_builder_js, log_api_js, log_entry_js, favicon])
+    //.mount("/static", StaticFiles::from(concat!(env!("CARGO_MANIFEST_DIR"),"/static"))) 
     .mount("/api", routes![
         api::handle_new_log_item,
         api::get_all_records,])
