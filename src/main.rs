@@ -81,7 +81,7 @@ pub fn rocket() -> rocket::Rocket {
 
     let mut config = Config::build(Environment::Production)
     .address("0.0.0.0")
-    .port(5000)
+    .port(8000)
     .secret_key("8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJ4=")
     .extra("databases", databases.clone())
     .finalize()
@@ -91,7 +91,7 @@ pub fn rocket() -> rocket::Rocket {
     if current_environment.is_dev() {
         config = Config::build(Environment::Development)
         .address("localhost")
-        .port(5000)
+        .port(8000)
         .extra("databases", databases)
         .finalize()
         .unwrap();
